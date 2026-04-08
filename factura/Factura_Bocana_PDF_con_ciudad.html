@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bocana Joyas — Generador de Facturas</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --gold: #c8a96e;
+    --gold-light: #e8d5a8;
+    --gold-dark: #9a7b3f;
+    --bg: #0d0d0d;
+    --card: #1a1a1a;
+    --text: #f0ece4;
+    --text-muted: #8a8577;
+    --border: #2a2a2a;
+    --danger: #c44;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Lexend', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 80px;
+  }
+  .container { max-width: 640px; margin: 0 auto; }
+  h1 {
+    font-size: 1.6rem; font-weight: 600; text-align: center; margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+  }
+  .subtitle { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 32px; }
+  .section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--gold); margin-bottom: 16px;
+  }
+  .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .form-row > * { flex: 1; }
+  .form-group { margin-bottom: 12px; }
+  label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+  input, select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px; color: var(--text);
+    font-family: 'Lexend', sans-serif; font-size: 0.9rem;
+    transition: border-color 0.2s; outline: none;
+  }
+  input:focus, select:focus { border-color: var(--gold); }
+  input::placeholder { color: #555; }
+  .product-item {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; margin-bottom: 10px; position: relative;
+  }
+  .product-item .form-row { margin-bottom: 8px; }
+  .product-item .form-row:last-child { margin-bottom: 0; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;
+    font-family: 'Lexend', sans-serif; font-size: 0.85rem; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-add {
+    background: transparent; border: 1px dashed var(--gold-dark);
+    color: var(--gold); width: 100%; padding: 12px;
+  }
+  .btn-add:hover { background: rgba(200,169,110,0.08); border-style: solid; }
+  .btn-remove {
+    position: absolute; top: 8px; right: 8px; background: transparent;
+    border: none; color: var(--danger); cursor: pointer; font-size: 1.1rem;
+    padding: 4px 8px; border-radius: 4px; line-height: 1;
+  }
+  .btn-remove:hover { background: rgba(204,68,68,0.15); }
+  .btn-generate {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: #111; width: 100%; padding: 14px 24px; font-size: 1rem;
+    font-weight: 600; border-radius: var(--radius); margin-top: 8px;
+  }
+  .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(200,169,110,0.3); }
+  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .totals {
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 16px;
+    font-size: 0.9rem; padding-top: 12px; border-top: 1px solid var(--border);
+  }
+  .totals .label { color: var(--text-muted); }
+  .totals .value { text-align: right; font-weight: 500; }
+  .totals .total-final .label { color: var(--gold); font-weight: 600; font-size: 1rem; }
+  .totals .total-final .value { color: var(--gold); font-weight: 700; font-size: 1rem; }
+  #qr-preview {
+    display: flex; align-items: center; justify-content: center; min-height: 80px; margin-top: 12px;
+  }
+  #qr-preview canvas, #qr-preview img { border-radius: 8px; }
+  .qr-note { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 6px; }
+  .status-msg {
+    text-align: center; padding: 12px; border-radius: 8px; font-size: 0.85rem;
+    margin-top: 12px; display: none;
+  }
+  .status-msg.error { display: block; background: rgba(204,68,68,0.15); color: #e88; }
+  .status-msg.success { display: block; background: rgba(110,200,110,0.15); color: #8c8; }
+  .product-subtotal { text-align: right; font-size: 0.8rem; color: var(--gold); margin-top: 4px; }
+  @media (max-width: 480px) {
+    .form-row { flex-direction: column; gap: 8px; }
+    .product-item .form-row { flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>✦ Bocana Joyas</h1>
+  <p class="subtitle">Generador de Factura Digital — PDF</p>
+
+  <div class="section">
+    <div class="section-title">Datos de la Factura</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="date" id="fecha" />
+      </div>
+      <div class="form-group">
+        <label>No. Pedido Shopify</label>
+        <input type="text" id="pedido" placeholder="Ej: 1234" />
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Datos del Cliente</div>
+    <div class="form-group">
+      <label>Nombre completo</label>
+      <input type="text" id="nombre" placeholder="Nombre del cliente" />
+    </div>
+    <div class="form-group">
+      <label>Cédula</label>
+      <input type="text" id="cedula" placeholder="Número de cédula" />
+    </div>
+    <div class="form-group">
+      <label>Dirección</label>
+      <input type="text" id="direccion" placeholder="Dirección de envío" />
+    </div>
+    <div class="form-group">
+      <label>Ciudad</label>
+      <input type="text" id="ciudad" placeholder="Ciudad" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" id="telefono" placeholder="300 123 4567" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="cliente@email.com" />
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Productos</div>
+    <div id="products-list"></div>
+    <button class="btn btn-add" onclick="addProduct()">+ Agregar producto</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Envío y Totales</div>
+    <div class="form-group">
+      <label>Valor de envío (dejar en 0 si no aplica)</label>
+      <input type="number" id="envio" value="0" min="0" step="100" oninput="updateTotals()" />
+    </div>
+    <div class="totals" id="totals-area">
+      <div class="label">Subtotal</div>
+      <div class="value" id="subtotal-display">$0</div>
+      <div class="label">Envío</div>
+      <div class="value" id="envio-display">$0</div>
+      <div class="total-final"><div class="label">Total</div></div>
+      <div class="total-final"><div class="value" id="total-display">$0</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Código QR</div>
+    <div class="form-group">
+      <label>Enlace para el código QR</label>
+      <input type="url" id="qr-url" placeholder="https://bocanajoyas.co/..." oninput="generateQR()" />
+    </div>
+    <div id="qr-preview"></div>
+    <p class="qr-note">Este QR se insertará en la factura</p>
+  </div>
+
+  <button class="btn btn-generate" id="btn-gen" onclick="generateInvoice()">
+    Generar Factura PDF
+  </button>
+  <div class="status-msg" id="status-msg"></div>
+</div>
+
+<script>
+const LOGO_B64 = 'data:image/png;base64,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';
+
+let productCount = 0;
+
+function addProduct() {
+  productCount++;
+  const id = productCount;
+  const div = document.createElement('div');
+  div.className = 'product-item';
+  div.id = `product-${id}`;
+  div.innerHTML = `
+    <button class="btn-remove" onclick="removeProduct(${id})">✕</button>
+    <div class="form-group">
+      <label>Producto</label>
+      <input type="text" class="p-name" placeholder="Nombre del producto" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" class="p-qty" value="1" min="1" oninput="updateTotals()" />
+      </div>
+      <div class="form-group">
+        <label>Precio unidad ($)</label>
+        <input type="number" class="p-price" value="0" min="0" step="100" oninput="updateTotals()" />
+      </div>
+    </div>
+    <div class="product-subtotal" id="psub-${id}">Subtotal: $0</div>
+  `;
+  document.getElementById('products-list').appendChild(div);
+  updateTotals();
+}
+
+function removeProduct(id) {
+  const el = document.getElementById(`product-${id}`);
+  if (el) el.remove();
+  updateTotals();
+}
+
+function getProducts() {
+  const items = document.querySelectorAll('.product-item');
+  const products = [];
+  items.forEach(item => {
+    const name = item.querySelector('.p-name').value || 'Producto';
+    const qty = parseInt(item.querySelector('.p-qty').value) || 1;
+    const price = parseFloat(item.querySelector('.p-price').value) || 0;
+    products.push({ name, qty, price, total: qty * price });
+  });
+  return products;
+}
+
+function formatCurrency(n) {
+  return '$' + Math.round(n).toLocaleString('es-CO');
+}
+
+function updateTotals() {
+  const products = getProducts();
+  const items = document.querySelectorAll('.product-item');
+  let idx = 0;
+  items.forEach(item => {
+    const p = products[idx];
+    const subEl = item.querySelector('.product-subtotal');
+    if (subEl && p) subEl.textContent = `Subtotal: ${formatCurrency(p.total)}`;
+    idx++;
+  });
+  const subtotal = products.reduce((s, p) => s + p.total, 0);
+  const envio = parseFloat(document.getElementById('envio').value) || 0;
+  const total = subtotal + envio;
+  document.getElementById('subtotal-display').textContent = formatCurrency(subtotal);
+  document.getElementById('envio-display').textContent = formatCurrency(envio);
+  document.getElementById('total-display').textContent = formatCurrency(total);
+}
+
+function generateQR() {
+  const url = document.getElementById('qr-url').value.trim();
+  const container = document.getElementById('qr-preview');
+  container.innerHTML = '';
+  if (!url) return;
+  new QRCode(container, {
+    text: url, width: 160, height: 160,
+    colorDark: '#000000', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+function getQRDataUrl() {
+  const container = document.getElementById('qr-preview');
+  const canvas = container.querySelector('canvas');
+  if (!canvas) return null;
+  return canvas.toDataURL('image/png');
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T12:00:00');
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  return `${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.className = 'status-msg ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+  if (type === 'success') setTimeout(() => el.style.display = 'none', 4000);
+}
+
+async function generateInvoice() {
+  const btn = document.getElementById('btn-gen');
+  btn.disabled = true;
+  btn.textContent = 'Generando PDF...';
+
+  try {
+    const fecha = formatDate(document.getElementById('fecha').value);
+    const pedido = document.getElementById('pedido').value.trim() || '0000';
+    const nombre = document.getElementById('nombre').value.trim();
+    const cedula = document.getElementById('cedula').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const ciudad = document.getElementById('ciudad').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const envio = parseFloat(document.getElementById('envio').value) || 0;
+    const products = getProducts();
+
+    if (!nombre) { showStatus('Por favor ingresa el nombre del cliente', 'error'); return; }
+    if (products.length === 0) { showStatus('Agrega al menos un producto', 'error'); return; }
+
+    const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    if (!jsPDF) { showStatus('Error: la librería jsPDF no cargó. Revisa tu conexión a internet y recarga la página.', 'error'); return; }
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+
+    // ===== HEADER: Logo + Invoice number =====
+    try {
+      doc.addImage(LOGO_B64, 'PNG', margin, y, 48, 15);
+    } catch(e) {
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('BOCANA JOYAS', margin, y + 10);
+    }
+
+    // Right side: date + order number
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text(fecha || 'Sin fecha', pageW - margin, y + 5, { align: 'right' });
+
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text(`No.${pedido}`, pageW - margin, y + 14, { align: 'right' });
+
+    y += 24;
+
+    // ===== SEPARATOR LINE =====
+    doc.setDrawColor(220, 220, 220);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+
+    // ===== CLIENT INFO (left) + QR (right) =====
+    const clientStartY = y;
+
+    // Client name bold
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text(nombre, margin + 2, y);
+    y += 5;
+
+    // CC
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`CC. ${cedula}`, margin + 2, y);
+    y += 8;
+
+    // Info table
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 80);
+
+    const infoRows = [
+      ['Dirección:', direccion],
+      ['Ciudad:', ciudad],
+      ['Teléfono:', telefono],
+      ['Email:', email]
+    ];
+
+    infoRows.forEach(([label, value]) => {
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(80, 80, 80);
+      doc.text(label, margin + 2, y);
+      doc.setTextColor(0, 0, 0);
+      doc.text(value || '-', margin + 30, y);
+      y += 5;
+    });
+
+    // QR on the right
+    const qrDataUrl = getQRDataUrl();
+    if (qrDataUrl) {
+      const qrSize = 35;
+      doc.addImage(qrDataUrl, 'PNG', pageW - margin - qrSize, clientStartY - 2, qrSize, qrSize);
+    }
+
+    y += 6;
+
+    // ===== PRODUCT TABLE =====
+    const subtotal = products.reduce((s, p) => s + p.total, 0);
+    const total = subtotal + envio;
+
+    const tableBody = products.map(p => [
+      p.name,
+      String(p.qty),
+      formatCurrency(p.price),
+      formatCurrency(p.total)
+    ]);
+
+    doc.autoTable({
+      startY: y,
+      margin: { left: margin, right: margin },
+      head: [['Producto', 'Cantidad', 'Precio Unidad', 'Total']],
+      body: tableBody,
+      styles: {
+        font: 'helvetica',
+        fontSize: 9,
+        cellPadding: 3,
+        lineColor: [0, 0, 0],
+        lineWidth: 0.25,
+        textColor: [0, 0, 0],
+      },
+      headStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
+        lineColor: [0, 0, 0],
+        lineWidth: 0.25,
+      },
+      bodyStyles: {
+        fillColor: [255, 255, 255],
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 25, halign: 'center' },
+        2: { cellWidth: 35, halign: 'right' },
+        3: { cellWidth: 35, halign: 'right' },
+      },
+      theme: 'grid',
+    });
+
+    y = doc.lastAutoTable.finalY;
+
+    // ===== ENVÍO ROW =====
+    if (envio > 0) {
+      doc.autoTable({
+        startY: y,
+        margin: { left: margin, right: margin },
+        body: [
+          [{ content: 'Envío', colSpan: 3, styles: { halign: 'right', fontStyle: 'normal' } }, formatCurrency(envio)]
+        ],
+        styles: {
+          font: 'helvetica', fontSize: 9, cellPadding: 3,
+          lineColor: [0, 0, 0], lineWidth: 0.25, textColor: [0, 0, 0],
+        },
+        bodyStyles: { fillColor: [255, 255, 255] },
+        columnStyles: { 3: { cellWidth: 35, halign: 'right' } },
+        theme: 'grid',
+      });
+      y = doc.lastAutoTable.finalY;
+    }
+
+    // ===== TOTAL ROW =====
+    doc.autoTable({
+      startY: y,
+      margin: { left: margin, right: margin },
+      body: [
+        [{ content: 'Total', colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
+         { content: formatCurrency(total), styles: { fontStyle: 'bold' } }]
+      ],
+      styles: {
+        font: 'helvetica', fontSize: 9, cellPadding: 3,
+        lineColor: [0, 0, 0], lineWidth: 0.25, textColor: [0, 0, 0],
+      },
+      bodyStyles: { fillColor: [255, 255, 255] },
+      columnStyles: { 3: { cellWidth: 35, halign: 'right' } },
+      theme: 'grid',
+    });
+
+    y = doc.lastAutoTable.finalY + 12;
+
+    // ===== THANK YOU =====
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Gracias por tu compra', margin, y);
+
+    // ===== SAVE =====
+    doc.save(`Factura_${pedido}_${nombre.replace(/\s+/g, '_')}.pdf`);
+    showStatus('¡Factura PDF generada exitosamente!', 'success');
+
+  } catch (err) {
+    console.error(err);
+    showStatus('Error al generar: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generar Factura PDF';
+  }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fecha').value = today;
+  addProduct();
+});
+</script>
+</body>
+</html>
