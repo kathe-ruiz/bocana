@@ -418,12 +418,20 @@
         <div class="s-btn plus"  data-field="h-clover7" data-delta="1">+</div>
       </div>
     </div>
-    <div class="balin-row" style="border:none;padding-bottom:0">
+    <div class="balin-row">
       <div class="balin-info"><div class="balin-name">Dije Virgen Guadalupe slim</div><div class="balin-price">$35.000 d · $24.500 m</div></div>
       <div class="stepper" id="st-h-virgen">
         <div class="s-btn minus" data-field="h-virgen" data-delta="-1">−</div>
         <input class="s-val" type="number" id="h-virgen" value="0" min="0" inputmode="numeric" oninput="inp('h-virgen')">
         <div class="s-btn plus"  data-field="h-virgen" data-delta="1">+</div>
+      </div>
+    </div>
+    <div class="balin-row" style="border:none;padding-bottom:0">
+      <div class="balin-info"><div class="balin-name">H Virgen silueta</div><div class="balin-price">$50.000 d · $35.000 m</div></div>
+      <div class="stepper" id="st-h-virgenSil">
+        <div class="s-btn minus" data-field="h-virgenSil" data-delta="-1">−</div>
+        <input class="s-val" type="number" id="h-virgenSil" value="0" min="0" inputmode="numeric" oninput="inp('h-virgenSil')">
+        <div class="s-btn plus"  data-field="h-virgenSil" data-delta="1">+</div>
       </div>
     </div>
   </div>
@@ -468,6 +476,26 @@
         <div class="s-btn minus" data-field="colNegro" data-delta="-1">−</div>
         <input class="s-val" type="number" id="colNegro" value="0" min="0" inputmode="numeric" oninput="inp('colNegro')">
         <div class="s-btn plus"  data-field="colNegro" data-delta="1">+</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Item personalizado</div>
+  <div class="card">
+    <div class="field">
+      <label>Nombre del item</label>
+      <input type="text" id="custom-name" placeholder="Ej: Dije especial…" autocomplete="off" oninput="calcular()">
+    </div>
+    <div class="field">
+      <label>Precio unitario</label>
+      <input type="text" id="custom-price" inputmode="numeric" placeholder="Ej: 25000" autocomplete="off" oninput="customPriceInp()">
+    </div>
+    <div class="balin-row" style="border:none;padding:14px 0 0">
+      <div class="balin-info"><div class="balin-name">Cantidad</div></div>
+      <div class="stepper" id="st-custom">
+        <div class="s-btn minus" data-field="custom-qty" data-delta="-1">−</div>
+        <input class="s-val" type="number" id="custom-qty" value="0" min="0" inputmode="numeric" oninput="inp('custom-qty')">
+        <div class="s-btn plus"  data-field="custom-qty" data-delta="1">+</div>
       </div>
     </div>
   </div>
@@ -565,6 +593,7 @@ var P = {
     'h-cruzAzul': { nombre:'Dije Cruz 6 circoniax azul',  detal:55000, mayorista:38500, costo:24500 },
     'h-clover7':  { nombre:'Dije Clover circonia 7mm',    detal:35000, mayorista:24500, costo:12600 },
     'h-virgen':   { nombre:'Dije Virgen Guadalupe slim',  detal:35000, mayorista:24500, costo:12600 },
+    'h-virgenSil':{ nombre:'H Virgen silueta',            detal:50000, mayorista:35000, costo:27000 },
     'neopreno-qty':{ nombre:'Neopreno',       detal:400, mayorista:400, costo:200 },
     chaq8:        { nombre:'Chaquira #8',     detal:15,  mayorista:15,  costo:5   },
     chaq6:        { nombre:'Chaquira #6',     detal:30,  mayorista:30,  costo:13  },
@@ -590,7 +619,8 @@ var stMap = {
   'h-cruz15':'st-h-cruz15','h-cruzMini':'st-h-cruzMini','h-sb8':'st-h-sb8','h-clover':'st-h-clover',
   'h-rosa':'st-h-rosa','h-sb10':'st-h-sb10','h-sbAb':'st-h-sbAb','h-lovix':'st-h-lovix',
   'h-infCirc':'st-h-infCirc','h-sbSizi':'st-h-sbSizi','h-cruzAzul':'st-h-cruzAzul',
-  'h-clover7':'st-h-clover7','h-virgen':'st-h-virgen'
+  'h-clover7':'st-h-clover7','h-virgen':'st-h-virgen','h-virgenSil':'st-h-virgenSil',
+  'custom-qty':'st-custom'
 };
 
 // ══════════════════════════════════════
@@ -683,6 +713,13 @@ function tap(id, delta) {
   calcular();
 }
 
+function customPriceInp() {
+  var el = document.getElementById('custom-price');
+  var v = parseInt(el.value);
+  if (isNaN(v) || v < 0) el.value = '';
+  calcular();
+}
+
 function inp(id) {
   var el = document.getElementById(id);
   if (!el) return;
@@ -725,6 +762,15 @@ function calcular() {
     if (qty > 0) {
       rows.push({ label: item.nombre + ' ×' + qty, val: cost });
     }
+  }
+
+  var customQty = g('custom-qty');
+  var customUnitPrice = parseInt(document.getElementById('custom-price').value) || 0;
+  if (customQty > 0 && customUnitPrice > 0) {
+    var customLabel = document.getElementById('custom-name').value.trim() || 'Item personalizado';
+    var customCost = customQty * customUnitPrice;
+    sub += customCost;
+    rows.push({ label: customLabel + ' ×' + customQty, val: customCost });
   }
 
   var aplicaFactor = (m !== 'costo');
@@ -773,6 +819,7 @@ function calcTot(m, snapshot) {
     var k = keys[i];
     sub += (snapshot[k] || 0) * P.items[k][m];
   }
+  sub += (snapshot.customQty || 0) * (snapshot.customPrice || 0);
   return (m === 'costo') ? sub : Math.round(sub * P.factorWeb);
 }
 
@@ -780,6 +827,9 @@ function getVals() {
   var snap = {};
   var keys = Object.keys(P.items);
   for (var i = 0; i < keys.length; i++) snap[keys[i]] = g(keys[i]);
+  snap.customName  = document.getElementById('custom-name').value.trim();
+  snap.customPrice = parseInt(document.getElementById('custom-price').value) || 0;
+  snap.customQty   = g('custom-qty');
 
   var d = {
     id: Date.now(),
@@ -817,6 +867,12 @@ function resetForm() {
   document.getElementById('nombre').value='';
   document.getElementById('cliente').value='';
   document.getElementById('nota').value='';
+  document.getElementById('custom-name').value='';
+  document.getElementById('custom-price').value='';
+  var cqEl = document.getElementById('custom-qty');
+  if (cqEl) cqEl.value=0;
+  var csSt = document.getElementById('st-custom');
+  if (csSt) csSt.classList.remove('active');
   calcular();
 }
 
@@ -848,6 +904,9 @@ function renderHistorial() {
       if (qty > 0 && P.items[k]) {
         tags += '<span class="history-tag">'+P.items[k].nombre+' ×'+qty+'</span>';
       }
+    }
+    if ((snap.customQty || 0) > 0 && (snap.customPrice || 0) > 0) {
+      tags += '<span class="history-tag">'+(snap.customName || 'Item personalizado')+' ×'+snap.customQty+'</span>';
     }
     html += '<div class="history-card"><div class="history-body">'
       +'<div class="history-name">'+h.nombre+'</div>'
@@ -897,6 +956,12 @@ function cargar(id) {
       var st = document.getElementById(stMap[k]);
       if (st) st.classList.toggle('active', v > 0);
     }
+    document.getElementById('custom-name').value  = snap.customName  || '';
+    document.getElementById('custom-price').value = snap.customPrice ? String(snap.customPrice) : '';
+    var cqEl = document.getElementById('custom-qty');
+    if (cqEl) cqEl.value = snap.customQty || 0;
+    var csSt = document.getElementById('st-custom');
+    if (csSt) csSt.classList.toggle('active', (snap.customQty || 0) > 0);
     calcular();
     window.scrollTo(0,0);
   }, 50);
