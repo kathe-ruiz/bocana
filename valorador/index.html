@@ -102,10 +102,10 @@
   .s-val::-webkit-outer-spin-button, .s-val::-webkit-inner-spin-button { -webkit-appearance: none; }
   .s-val[type=number] { -moz-appearance: textfield; }
 
-  .price-mode { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-strong); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+  .price-mode { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid var(--border-strong); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
   .mode-btn {
-    padding: 14px; text-align: center;
-    font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 14px 6px; text-align: center;
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
     cursor: pointer; background: var(--surface-warm); color: var(--ink-muted); height: 48px;
     touch-action: manipulation; -webkit-user-select: none; user-select: none;
     border: none;
@@ -152,10 +152,11 @@
   .history-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--ink); margin-bottom: 2px; }
   .history-client { font-size: 11px; color: var(--ink-muted); margin-bottom: 2px; }
   .history-date { font-size: 9px; letter-spacing: 0.15em; color: var(--ink-muted); margin-bottom: 12px; }
-  .history-prices { display: flex; gap: 20px; margin-bottom: 10px; }
-  .history-price-block { flex: 1; }
-  .history-price-label { font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2px; }
-  .history-price-val { font-size: 20px; color: var(--gold); font-family: 'Cormorant Garamond', serif; }
+  .history-prices { display: flex; gap: 12px; margin-bottom: 10px; }
+  .history-price-block { flex: 1; min-width: 0; }
+  .history-price-label { font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2px; white-space: nowrap; }
+  .history-price-val { font-size: 17px; color: var(--gold); font-family: 'Cormorant Garamond', serif; white-space: nowrap; }
+  .history-price-block.cost .history-price-val { color: var(--ink-soft); font-size: 15px; }
   .history-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
   .history-tag { font-size: 8px; letter-spacing: 0.1em; padding: 3px 8px; background: var(--gold-pale); color: var(--ink-soft); border-radius: 2px; }
   .history-actions { display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
@@ -476,6 +477,7 @@
     <div class="price-mode">
       <button type="button" class="mode-btn active" id="btn-detal"     data-mode="detal">Detal</button>
       <button type="button" class="mode-btn"        id="btn-mayorista" data-mode="mayorista">Mayorista</button>
+      <button type="button" class="mode-btn"        id="btn-costo"     data-mode="costo">Costo</button>
     </div>
     <div id="breakdown"></div>
     <div class="total-block">
@@ -535,39 +537,39 @@
 // PRECIOS — todos los items con cantidad
 // ══════════════════════════════════════
 var P = {
-  manoObra: { detal:18000, mayorista:12600 },
+  manoObra: { detal:18000, mayorista:12600, costo:8000 },
   factorWeb: 1.04,
-  // items[id] = { nombre, detal, mayorista }
+  // items[id] = { nombre, detal, mayorista, costo }
   items: {
-    bd4:        { nombre:'Balín diamantado #4',  detal:5000,  mayorista:3500  },
-    bl3:        { nombre:'Balín liso #3',        detal:3200,  mayorista:2240  },
-    bl4:        { nombre:'Balín liso #4',        detal:4400,  mayorista:3080  },
-    bl5:        { nombre:'Balín liso #5',        detal:7800,  mayorista:5460  },
-    bx6:        { nombre:'Balín X #6',           detal:10000, mayorista:7000  },
-    rondCrist:  { nombre:'Rondel cristal 3.4mm', detal:12000, mayorista:8400  },
-    rond5Crist: { nombre:'Rondel cristal 5mm',   detal:13400, mayorista:9380  },
-    rondNegro:  { nombre:'Rondel negro 3.4mm',   detal:12000, mayorista:8400  },
-    rond5Negro: { nombre:'Rondel negro 5mm',     detal:13400, mayorista:9380  },
-    rondVerde:  { nombre:'Rondel verde 3.4mm',   detal:12000, mayorista:8400  },
-    rond5Verde: { nombre:'Rondel verde 5mm',     detal:13400, mayorista:9380  },
-    'h-cruz15':   { nombre:'H Cruz 15mm',                 detal:45000, mayorista:31500 },
-    'h-cruzMini': { nombre:'H Cruz mini 11mm',            detal:35000, mayorista:24500 },
-    'h-sb8':      { nombre:'H San Benito 8mm',            detal:35000, mayorista:24500 },
-    'h-clover':   { nombre:'H Clover sol',                detal:45000, mayorista:31500 },
-    'h-rosa':     { nombre:'H Rosa de Guadalupe',         detal:25000, mayorista:17500 },
-    'h-sb10':     { nombre:'H San Benito 10mm',           detal:40000, mayorista:28000 },
-    'h-sbAb':     { nombre:'H San Benito abad',           detal:30000, mayorista:21000 },
-    'h-lovix':    { nombre:'H Lovix',                     detal:40000, mayorista:28000 },
-    'h-infCirc':  { nombre:'H Infinito circoniax',        detal:55000, mayorista:38500 },
-    'h-sbSizi':   { nombre:'H San Benito americano',      detal:35000, mayorista:24500 },
-    'h-cruzAzul': { nombre:'Dije Cruz 6 circoniax azul',  detal:55000, mayorista:38500 },
-    'h-clover7':  { nombre:'Dije Clover circonia 7mm',    detal:35000, mayorista:24500 },
-    'h-virgen':   { nombre:'Dije Virgen Guadalupe slim',  detal:35000, mayorista:24500 },
-    'neopreno-qty':{ nombre:'Neopreno',       detal:400, mayorista:400 },
-    chaq8:        { nombre:'Chaquira #8',     detal:15,  mayorista:15  },
-    chaq6:        { nombre:'Chaquira #6',     detal:30,  mayorista:30  },
-    colRojo:      { nombre:'Colmillo Rojo',   detal:700, mayorista:700 },
-    colNegro:     { nombre:'Colmillo Negro',  detal:400, mayorista:400 }
+    bd4:        { nombre:'Balín diamantado #4',  detal:5000,  mayorista:3500,  costo:2500 },
+    bl3:        { nombre:'Balín liso #3',        detal:3200,  mayorista:2240,  costo:1200 },
+    bl4:        { nombre:'Balín liso #4',        detal:4400,  mayorista:3080,  costo:1700 },
+    bl5:        { nombre:'Balín liso #5',        detal:7800,  mayorista:5460,  costo:3500 },
+    bx6:        { nombre:'Balín X #6',           detal:10000, mayorista:7000,  costo:4100 },
+    rondCrist:  { nombre:'Rondel cristal 3.4mm', detal:12000, mayorista:8400,  costo:4200 },
+    rond5Crist: { nombre:'Rondel cristal 5mm',   detal:13400, mayorista:9380,  costo:5833 },
+    rondNegro:  { nombre:'Rondel negro 3.4mm',   detal:12000, mayorista:8400,  costo:4200 },
+    rond5Negro: { nombre:'Rondel negro 5mm',     detal:13400, mayorista:9380,  costo:5833 },
+    rondVerde:  { nombre:'Rondel verde 3.4mm',   detal:12000, mayorista:8400,  costo:4200 },
+    rond5Verde: { nombre:'Rondel verde 5mm',     detal:13400, mayorista:9380,  costo:5833 },
+    'h-cruz15':   { nombre:'H Cruz 15mm',                 detal:45000, mayorista:31500, costo:17500 },
+    'h-cruzMini': { nombre:'H Cruz mini 11mm',            detal:35000, mayorista:24500, costo:14000 },
+    'h-sb8':      { nombre:'H San Benito 8mm',            detal:35000, mayorista:24500, costo:12600 },
+    'h-clover':   { nombre:'H Clover sol',                detal:45000, mayorista:31500, costo:17500 },
+    'h-rosa':     { nombre:'H Rosa de Guadalupe',         detal:25000, mayorista:17500, costo:10500 },
+    'h-sb10':     { nombre:'H San Benito 10mm',           detal:40000, mayorista:28000, costo:15400 },
+    'h-sbAb':     { nombre:'H San Benito abad',           detal:30000, mayorista:21000, costo:11900 },
+    'h-lovix':    { nombre:'H Lovix',                     detal:40000, mayorista:28000, costo:14000 },
+    'h-infCirc':  { nombre:'H Infinito circoniax',        detal:55000, mayorista:38500, costo:35000 },
+    'h-sbSizi':   { nombre:'H San Benito americano',      detal:35000, mayorista:24500, costo:17500 },
+    'h-cruzAzul': { nombre:'Dije Cruz 6 circoniax azul',  detal:55000, mayorista:38500, costo:24500 },
+    'h-clover7':  { nombre:'Dije Clover circonia 7mm',    detal:35000, mayorista:24500, costo:12600 },
+    'h-virgen':   { nombre:'Dije Virgen Guadalupe slim',  detal:35000, mayorista:24500, costo:12600 },
+    'neopreno-qty':{ nombre:'Neopreno',       detal:400, mayorista:400, costo:200 },
+    chaq8:        { nombre:'Chaquira #8',     detal:15,  mayorista:15,  costo:5   },
+    chaq6:        { nombre:'Chaquira #6',     detal:30,  mayorista:30,  costo:13  },
+    colRojo:      { nombre:'Colmillo Rojo',   detal:700, mayorista:700, costo:350 },
+    colNegro:     { nombre:'Colmillo Negro',  detal:400, mayorista:400, costo:210 }
   }
 };
 
@@ -606,6 +608,7 @@ window.onload = function() {
 // SISTEMA DE TAP ANTI-SCROLL
 // ══════════════════════════════════════
 var touchStartY = 0, touchStartX = 0, touchMoved = false;
+var lastTouchTime = 0;
 
 document.addEventListener('touchstart', function(e) {
   touchStartY = e.touches[0].clientY;
@@ -621,11 +624,13 @@ document.addEventListener('touchmove', function(e) {
 
 document.addEventListener('touchend', function(e) {
   if (touchMoved) return;
+  lastTouchTime = Date.now();
   handleTap(e.target);
 });
 
 document.addEventListener('click', function(e) {
-  if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+  // Si hubo un touchend en los últimos 600ms, ignorar el click sintético de iOS
+  if (Date.now() - lastTouchTime < 600) return;
   handleTap(e.target);
 });
 
@@ -693,8 +698,9 @@ function inp(id) {
 // ══════════════════════════════════════
 function setModo(m) {
   modo = m;
-  document.getElementById('btn-detal').classList.toggle('active', m === 'detal');
+  document.getElementById('btn-detal').classList.toggle('active',     m === 'detal');
   document.getElementById('btn-mayorista').classList.toggle('active', m === 'mayorista');
+  document.getElementById('btn-costo').classList.toggle('active',     m === 'costo');
   calcular();
 }
 
@@ -721,8 +727,11 @@ function calcular() {
     }
   }
 
-  var tot = Math.round(sub * P.factorWeb);
-  rows.push({ label:'Factor web +4%', val: tot - sub });
+  var aplicaFactor = (m !== 'costo');
+  var tot = aplicaFactor ? Math.round(sub * P.factorWeb) : sub;
+  if (aplicaFactor) {
+    rows.push({ label:'Factor web +4%', val: tot - sub });
+  }
 
   var html = '';
   for (var r = 0; r < rows.length; r++) {
@@ -732,7 +741,13 @@ function calcular() {
   }
   document.getElementById('breakdown').innerHTML = html;
   document.getElementById('total-display').textContent = '$'+fmt(tot);
-  document.getElementById('subtotal-display').textContent = 'Subtotal: $'+fmt(sub);
+  document.getElementById('subtotal-display').textContent = aplicaFactor ? ('Subtotal: $'+fmt(sub)) : 'Sin factor web';
+
+  // Actualizar label del total
+  var totalLabel = document.querySelector('.total-label');
+  if (totalLabel) {
+    totalLabel.textContent = m === 'costo' ? 'Costo total' : 'Total página web';
+  }
 }
 
 // ══════════════════════════════════════
@@ -758,7 +773,7 @@ function calcTot(m, snapshot) {
     var k = keys[i];
     sub += (snapshot[k] || 0) * P.items[k][m];
   }
-  return Math.round(sub * P.factorWeb);
+  return (m === 'costo') ? sub : Math.round(sub * P.factorWeb);
 }
 
 function getVals() {
@@ -773,8 +788,9 @@ function getVals() {
     cliente: document.getElementById('cliente').value.trim(),
     nota:    document.getElementById('nota').value.trim(),
     items:   snap,
-    totalDetal: calcTot('detal', snap),
-    totalMayorista: calcTot('mayorista', snap)
+    totalDetal:     calcTot('detal',     snap),
+    totalMayorista: calcTot('mayorista', snap),
+    totalCosto:     calcTot('costo',     snap)
   };
   return d;
 }
@@ -840,6 +856,7 @@ function renderHistorial() {
       +'<div class="history-prices">'
       +'<div class="history-price-block"><div class="history-price-label">Detal</div><div class="history-price-val">$'+fmt(h.totalDetal)+'</div></div>'
       +'<div class="history-price-block"><div class="history-price-label">Mayorista</div><div class="history-price-val">$'+fmt(h.totalMayorista)+'</div></div>'
+      +'<div class="history-price-block cost"><div class="history-price-label">Costo</div><div class="history-price-val">$'+fmt(h.totalCosto||0)+'</div></div>'
       +'</div>'
       +(tags?'<div class="history-tags">'+tags+'</div>':'')
       +(h.nota?'<div style="font-size:10px;color:var(--ink-muted);font-style:italic;margin-bottom:8px">'+h.nota+'</div>':'')
