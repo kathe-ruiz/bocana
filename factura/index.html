@@ -492,6 +492,13 @@ async function generateInvoice() {
     doc.setTextColor(0, 0, 0);
     doc.text('Gracias por tu compra', margin, y);
 
+    y += 8;
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    const garantiaNota = 'En caso de garantía, el cliente deberá cubrir por anticipado los costos de envío tanto de ida como de vuelta del producto.';
+    const garantiaLines = doc.splitTextToSize(garantiaNota, contentW);
+    doc.text(garantiaLines, margin, y);
+
     // ===== SAVE =====
     doc.save(`Factura_${pedido}_${nombre.replace(/\s+/g, '_')}.pdf`);
     showStatus('¡Factura PDF generada exitosamente!', 'success');
