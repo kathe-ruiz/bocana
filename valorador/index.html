@@ -324,38 +324,6 @@ var CATEGORY_GROUPS = [
   { label: 'Opcionales',         cats: ['opcionales'] }
 ];
 
-var FALLBACK_ROWS = [
-  {codigo:'bd4',         nombre:'Balín diamantado #4',        categoria:'balin', subcategoria:'diamantada', detal:5000,  mayorista:3500,  costo:2500,  orden:10},
-  {codigo:'bl3',         nombre:'Balín liso #3',              categoria:'balin', subcategoria:'lisa',       detal:3200,  mayorista:2240,  costo:1200,  orden:20},
-  {codigo:'bl4',         nombre:'Balín liso #4',              categoria:'balin', subcategoria:'lisa',       detal:4400,  mayorista:3080,  costo:1700,  orden:30},
-  {codigo:'bl5',         nombre:'Balín liso #5',              categoria:'balin', subcategoria:'lisa',       detal:7800,  mayorista:5460,  costo:3500,  orden:40},
-  {codigo:'bx6',         nombre:'Balín X #6',                 categoria:'balin', subcategoria:'x',          detal:10000, mayorista:7000,  costo:4100,  orden:50},
-  {codigo:'rondCrist',   nombre:'Rondel cristal 3.4mm',       categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:60},
-  {codigo:'rond5Crist',  nombre:'Rondel cristal 5mm',         categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:70},
-  {codigo:'rondNegro',   nombre:'Rondel negro 3.4mm',         categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:80},
-  {codigo:'rond5Negro',  nombre:'Rondel negro 5mm',           categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:90},
-  {codigo:'rondVerde',   nombre:'Rondel verde 3.4mm',         categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:100},
-  {codigo:'rond5Verde',  nombre:'Rondel verde 5mm',           categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:110},
-  {codigo:'h-cruz15',    nombre:'H Cruz 15mm',                categoria:'herraje_otros',      detal:45000, mayorista:31500, costo:17500, orden:120},
-  {codigo:'h-cruzMini',  nombre:'H Cruz mini 11mm',           categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:14000, orden:130},
-  {codigo:'h-sb8',       nombre:'H San Benito 8mm',           categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:12600, orden:140},
-  {codigo:'h-clover',    nombre:'H Clover sol',               categoria:'herraje_otros',      detal:45000, mayorista:31500, costo:17500, orden:150},
-  {codigo:'h-rosa',      nombre:'H Rosa de Guadalupe',        categoria:'herraje_otros',      detal:25000, mayorista:17500, costo:10500, orden:160},
-  {codigo:'h-sb10',      nombre:'H San Benito 10mm',          categoria:'herraje_otros',      detal:40000, mayorista:28000, costo:15400, orden:170},
-  {codigo:'h-sbAb',      nombre:'H San Benito abad',          categoria:'herraje_otros',      detal:30000, mayorista:21000, costo:11900, orden:180},
-  {codigo:'h-lovix',     nombre:'H Lovix',                    categoria:'herraje_otros',      detal:40000, mayorista:28000, costo:14000, orden:190},
-  {codigo:'h-infCirc',   nombre:'H Infinito circoniax',       categoria:'herraje_otros',      detal:55000, mayorista:38500, costo:35000, orden:200},
-  {codigo:'h-sbSizi',    nombre:'H San Benito americano',     categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:17500, orden:210},
-  {codigo:'h-cruzAzul',  nombre:'Dije Cruz 6 circoniax azul', categoria:'herraje_otros',      detal:55000, mayorista:38500, costo:24500, orden:220},
-  {codigo:'h-clover7',   nombre:'Dije Clover circonia 7mm',   categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:12600, orden:230},
-  {codigo:'h-virgen',    nombre:'Dije Virgen Guadalupe slim', categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:12600, orden:240},
-  {codigo:'h-virgenSil', nombre:'H Virgen silueta',           categoria:'herraje_otros',      detal:50000, mayorista:35000, costo:27000, orden:250},
-  {codigo:'neopreno-qty',nombre:'Neopreno',                   categoria:'opcionales',         detal:400,   mayorista:400,   costo:200,   orden:260},
-  {codigo:'chaq8',       nombre:'Chaquira #8',                categoria:'opcionales',         detal:15,    mayorista:15,    costo:5,     orden:270},
-  {codigo:'chaq6',       nombre:'Chaquira #6',                categoria:'opcionales',         detal:30,    mayorista:30,    costo:13,    orden:280},
-  {codigo:'colRojo',     nombre:'Colmillo Rojo',              categoria:'opcionales',         detal:700,   mayorista:700,   costo:350,   orden:290},
-  {codigo:'colNegro',    nombre:'Colmillo Negro',             categoria:'opcionales',         detal:400,   mayorista:400,   costo:210,   orden:300}
-];
 
 // ══════════════════════════════════════
 // PRECIOS
@@ -458,12 +426,11 @@ window.onload = function() {
     return r.json();
   })
   .then(function(rows) {
-    buildItemsUI(rows.length ? rows : FALLBACK_ROWS);
-    if (!rows.length) toast('Items locales (tabla vacía)', 'info');
+    buildItemsUI(rows);
   })
   .catch(function() {
-    buildItemsUI(FALLBACK_ROWS);
-    toast('Sin conexión — precios locales', 'info');
+    document.getElementById('items-container').innerHTML =
+      '<div class="items-loading"><span>Error al cargar — revisar conexión</span></div>';
   });
 };
 
