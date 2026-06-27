@@ -182,6 +182,10 @@
   .toast.success { background: var(--green-dark); color: #fff; }
   .toast.error   { background: var(--red); color: #fff; }
   .toast.info    { background: var(--ink); color: var(--gold-light); }
+
+  .items-loading { text-align: center; padding: 48px 20px; color: var(--ink-muted); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+  .items-loading span { display: inline-block; animation: pulse 1.4s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -216,269 +220,10 @@
     </div>
   </div>
 
-  <div class="section-label">Balín diamantado</div>
-  <div class="card">
-    <div class="balin-row" style="border:none;padding:0">
-      <div class="balin-info"><div class="balin-name">#4</div><div class="balin-price">$5.000 d · $3.500 m</div></div>
-      <div class="stepper" id="st-bd4">
-        <div class="s-btn minus" data-field="bd4" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="bd4" value="0" min="0" inputmode="numeric" oninput="inp('bd4')">
-        <div class="s-btn plus"  data-field="bd4" data-delta="1">+</div>
-      </div>
-    </div>
+  <div id="items-container">
+    <div class="items-loading"><span>Cargando items</span></div>
   </div>
 
-  <div class="section-label">Balín liso</div>
-  <div class="card">
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">#3</div><div class="balin-price">$3.200 d · $2.240 m</div></div>
-      <div class="stepper" id="st-bl3">
-        <div class="s-btn minus" data-field="bl3" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="bl3" value="0" min="0" inputmode="numeric" oninput="inp('bl3')">
-        <div class="s-btn plus"  data-field="bl3" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">#4</div><div class="balin-price">$4.400 d · $3.080 m</div></div>
-      <div class="stepper" id="st-bl4">
-        <div class="s-btn minus" data-field="bl4" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="bl4" value="0" min="0" inputmode="numeric" oninput="inp('bl4')">
-        <div class="s-btn plus"  data-field="bl4" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">#5</div><div class="balin-price">$7.800 d · $5.460 m</div></div>
-      <div class="stepper" id="st-bl5">
-        <div class="s-btn minus" data-field="bl5" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="bl5" value="0" min="0" inputmode="numeric" oninput="inp('bl5')">
-        <div class="s-btn plus"  data-field="bl5" data-delta="1">+</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-label">Balín X</div>
-  <div class="card">
-    <div class="balin-row" style="border:none;padding:0">
-      <div class="balin-info"><div class="balin-name">#6</div><div class="balin-price">$10.000 d · $7.000 m</div></div>
-      <div class="stepper" id="st-bx6">
-        <div class="s-btn minus" data-field="bx6" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="bx6" value="0" min="0" inputmode="numeric" oninput="inp('bx6')">
-        <div class="s-btn plus"  data-field="bx6" data-delta="1">+</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-label">Herraje — Rondeles</div>
-  <div class="card">
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Cristal 3.4mm</div><div class="balin-price">$12.000 d · $8.400 m</div></div>
-      <div class="stepper" id="st-rondCrist">
-        <div class="s-btn minus" data-field="rondCrist" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="rondCrist" value="0" min="0" inputmode="numeric" oninput="inp('rondCrist')">
-        <div class="s-btn plus"  data-field="rondCrist" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Cristal 5mm</div><div class="balin-price">$13.400 d · $9.380 m</div></div>
-      <div class="stepper" id="st-rond5Crist">
-        <div class="s-btn minus" data-field="rond5Crist" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="rond5Crist" value="0" min="0" inputmode="numeric" oninput="inp('rond5Crist')">
-        <div class="s-btn plus"  data-field="rond5Crist" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Negro 3.4mm</div><div class="balin-price">$12.000 d · $8.400 m</div></div>
-      <div class="stepper" id="st-rondNegro">
-        <div class="s-btn minus" data-field="rondNegro" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="rondNegro" value="0" min="0" inputmode="numeric" oninput="inp('rondNegro')">
-        <div class="s-btn plus"  data-field="rondNegro" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Negro 5mm</div><div class="balin-price">$13.400 d · $9.380 m</div></div>
-      <div class="stepper" id="st-rond5Negro">
-        <div class="s-btn minus" data-field="rond5Negro" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="rond5Negro" value="0" min="0" inputmode="numeric" oninput="inp('rond5Negro')">
-        <div class="s-btn plus"  data-field="rond5Negro" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Verde 3.4mm</div><div class="balin-price">$12.000 d · $8.400 m</div></div>
-      <div class="stepper" id="st-rondVerde">
-        <div class="s-btn minus" data-field="rondVerde" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="rondVerde" value="0" min="0" inputmode="numeric" oninput="inp('rondVerde')">
-        <div class="s-btn plus"  data-field="rondVerde" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row" style="border:none;padding-bottom:0">
-      <div class="balin-info"><div class="balin-name">Verde 5mm</div><div class="balin-price">$13.400 d · $9.380 m</div></div>
-      <div class="stepper" id="st-rond5Verde">
-        <div class="s-btn minus" data-field="rond5Verde" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="rond5Verde" value="0" min="0" inputmode="numeric" oninput="inp('rond5Verde')">
-        <div class="s-btn plus"  data-field="rond5Verde" data-delta="1">+</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-label">Herraje — Otros</div>
-  <div class="card">
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H Cruz 15mm</div><div class="balin-price">$45.000 d · $31.500 m</div></div>
-      <div class="stepper" id="st-h-cruz15">
-        <div class="s-btn minus" data-field="h-cruz15" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-cruz15" value="0" min="0" inputmode="numeric" oninput="inp('h-cruz15')">
-        <div class="s-btn plus"  data-field="h-cruz15" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H Cruz mini 11mm</div><div class="balin-price">$35.000 d · $24.500 m</div></div>
-      <div class="stepper" id="st-h-cruzMini">
-        <div class="s-btn minus" data-field="h-cruzMini" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-cruzMini" value="0" min="0" inputmode="numeric" oninput="inp('h-cruzMini')">
-        <div class="s-btn plus"  data-field="h-cruzMini" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H San Benito 8mm</div><div class="balin-price">$35.000 d · $24.500 m</div></div>
-      <div class="stepper" id="st-h-sb8">
-        <div class="s-btn minus" data-field="h-sb8" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-sb8" value="0" min="0" inputmode="numeric" oninput="inp('h-sb8')">
-        <div class="s-btn plus"  data-field="h-sb8" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H Clover sol</div><div class="balin-price">$45.000 d · $31.500 m</div></div>
-      <div class="stepper" id="st-h-clover">
-        <div class="s-btn minus" data-field="h-clover" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-clover" value="0" min="0" inputmode="numeric" oninput="inp('h-clover')">
-        <div class="s-btn plus"  data-field="h-clover" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H Rosa de Guadalupe</div><div class="balin-price">$25.000 d · $17.500 m</div></div>
-      <div class="stepper" id="st-h-rosa">
-        <div class="s-btn minus" data-field="h-rosa" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-rosa" value="0" min="0" inputmode="numeric" oninput="inp('h-rosa')">
-        <div class="s-btn plus"  data-field="h-rosa" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H San Benito 10mm</div><div class="balin-price">$40.000 d · $28.000 m</div></div>
-      <div class="stepper" id="st-h-sb10">
-        <div class="s-btn minus" data-field="h-sb10" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-sb10" value="0" min="0" inputmode="numeric" oninput="inp('h-sb10')">
-        <div class="s-btn plus"  data-field="h-sb10" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H San Benito abad</div><div class="balin-price">$30.000 d · $21.000 m</div></div>
-      <div class="stepper" id="st-h-sbAb">
-        <div class="s-btn minus" data-field="h-sbAb" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-sbAb" value="0" min="0" inputmode="numeric" oninput="inp('h-sbAb')">
-        <div class="s-btn plus"  data-field="h-sbAb" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H Lovix</div><div class="balin-price">$40.000 d · $28.000 m</div></div>
-      <div class="stepper" id="st-h-lovix">
-        <div class="s-btn minus" data-field="h-lovix" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-lovix" value="0" min="0" inputmode="numeric" oninput="inp('h-lovix')">
-        <div class="s-btn plus"  data-field="h-lovix" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H Infinito circoniax</div><div class="balin-price">$55.000 d · $38.500 m</div></div>
-      <div class="stepper" id="st-h-infCirc">
-        <div class="s-btn minus" data-field="h-infCirc" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-infCirc" value="0" min="0" inputmode="numeric" oninput="inp('h-infCirc')">
-        <div class="s-btn plus"  data-field="h-infCirc" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">H San Benito americano</div><div class="balin-price">$35.000 d · $24.500 m</div></div>
-      <div class="stepper" id="st-h-sbSizi">
-        <div class="s-btn minus" data-field="h-sbSizi" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-sbSizi" value="0" min="0" inputmode="numeric" oninput="inp('h-sbSizi')">
-        <div class="s-btn plus"  data-field="h-sbSizi" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Dije Cruz 6 circoniax azul</div><div class="balin-price">$55.000 d · $38.500 m</div></div>
-      <div class="stepper" id="st-h-cruzAzul">
-        <div class="s-btn minus" data-field="h-cruzAzul" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-cruzAzul" value="0" min="0" inputmode="numeric" oninput="inp('h-cruzAzul')">
-        <div class="s-btn plus"  data-field="h-cruzAzul" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Dije Clover circonia 7mm</div><div class="balin-price">$35.000 d · $24.500 m</div></div>
-      <div class="stepper" id="st-h-clover7">
-        <div class="s-btn minus" data-field="h-clover7" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-clover7" value="0" min="0" inputmode="numeric" oninput="inp('h-clover7')">
-        <div class="s-btn plus"  data-field="h-clover7" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Dije Virgen Guadalupe slim</div><div class="balin-price">$35.000 d · $24.500 m</div></div>
-      <div class="stepper" id="st-h-virgen">
-        <div class="s-btn minus" data-field="h-virgen" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-virgen" value="0" min="0" inputmode="numeric" oninput="inp('h-virgen')">
-        <div class="s-btn plus"  data-field="h-virgen" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row" style="border:none;padding-bottom:0">
-      <div class="balin-info"><div class="balin-name">H Virgen silueta</div><div class="balin-price">$50.000 d · $35.000 m</div></div>
-      <div class="stepper" id="st-h-virgenSil">
-        <div class="s-btn minus" data-field="h-virgenSil" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="h-virgenSil" value="0" min="0" inputmode="numeric" oninput="inp('h-virgenSil')">
-        <div class="s-btn plus"  data-field="h-virgenSil" data-delta="1">+</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-label">Opcionales</div>
-  <div class="card">
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Neopreno</div><div class="balin-price">$400 d · $400 m</div></div>
-      <div class="stepper" id="st-neo">
-        <div class="s-btn minus" data-field="neopreno-qty" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="neopreno-qty" value="0" min="0" inputmode="numeric" oninput="inp('neopreno-qty')">
-        <div class="s-btn plus"  data-field="neopreno-qty" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Chaquira #8</div><div class="balin-price">$15 d · $15 m</div></div>
-      <div class="stepper" id="st-chaq8">
-        <div class="s-btn minus" data-field="chaq8" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="chaq8" value="0" min="0" inputmode="numeric" oninput="inp('chaq8')">
-        <div class="s-btn plus"  data-field="chaq8" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Chaquira #6</div><div class="balin-price">$30 d · $30 m</div></div>
-      <div class="stepper" id="st-chaq6">
-        <div class="s-btn minus" data-field="chaq6" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="chaq6" value="0" min="0" inputmode="numeric" oninput="inp('chaq6')">
-        <div class="s-btn plus"  data-field="chaq6" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row">
-      <div class="balin-info"><div class="balin-name">Colmillo Rojo</div><div class="balin-price">$700 d · $700 m</div></div>
-      <div class="stepper" id="st-colRojo">
-        <div class="s-btn minus" data-field="colRojo" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="colRojo" value="0" min="0" inputmode="numeric" oninput="inp('colRojo')">
-        <div class="s-btn plus"  data-field="colRojo" data-delta="1">+</div>
-      </div>
-    </div>
-    <div class="balin-row" style="border:none;padding-bottom:0">
-      <div class="balin-info"><div class="balin-name">Colmillo Negro</div><div class="balin-price">$400 d · $400 m</div></div>
-      <div class="stepper" id="st-colNegro">
-        <div class="s-btn minus" data-field="colNegro" data-delta="-1">−</div>
-        <input class="s-val" type="number" id="colNegro" value="0" min="0" inputmode="numeric" oninput="inp('colNegro')">
-        <div class="s-btn plus"  data-field="colNegro" data-delta="1">+</div>
-      </div>
-    </div>
-  </div>
 
   <div class="section-label">Item personalizado</div>
   <div class="card">
@@ -562,44 +307,60 @@
 
 <script>
 // ══════════════════════════════════════
-// PRECIOS — todos los items con cantidad
+// SUPABASE
+// ══════════════════════════════════════
+var SUPABASE_URL = 'https://oubasfjxgpgqwtgihqzy.supabase.co/rest/v1/items_valorador';
+var SUPABASE_KEY = 'sb_publishable_Yq5ww0VtxlsK5dgbZDPPTg_JSTNSYYB';
+
+var CATEGORY_LABELS = {
+  balin_diamantado: 'Balín diamantado',
+  balin_liso:       'Balín liso',
+  balin_x:          'Balín X',
+  herraje_rondeles: 'Herraje — Rondeles',
+  herraje_otros:    'Herraje — Otros',
+  opcionales:       'Opcionales'
+};
+
+var FALLBACK_ROWS = [
+  {codigo:'bd4',         nombre:'Balín diamantado #4',        categoria:'balin_diamantado',  detal:5000,  mayorista:3500,  costo:2500,  orden:10},
+  {codigo:'bl3',         nombre:'Balín liso #3',              categoria:'balin_liso',         detal:3200,  mayorista:2240,  costo:1200,  orden:20},
+  {codigo:'bl4',         nombre:'Balín liso #4',              categoria:'balin_liso',         detal:4400,  mayorista:3080,  costo:1700,  orden:30},
+  {codigo:'bl5',         nombre:'Balín liso #5',              categoria:'balin_liso',         detal:7800,  mayorista:5460,  costo:3500,  orden:40},
+  {codigo:'bx6',         nombre:'Balín X #6',                 categoria:'balin_x',            detal:10000, mayorista:7000,  costo:4100,  orden:50},
+  {codigo:'rondCrist',   nombre:'Rondel cristal 3.4mm',       categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:60},
+  {codigo:'rond5Crist',  nombre:'Rondel cristal 5mm',         categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:70},
+  {codigo:'rondNegro',   nombre:'Rondel negro 3.4mm',         categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:80},
+  {codigo:'rond5Negro',  nombre:'Rondel negro 5mm',           categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:90},
+  {codigo:'rondVerde',   nombre:'Rondel verde 3.4mm',         categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:100},
+  {codigo:'rond5Verde',  nombre:'Rondel verde 5mm',           categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:110},
+  {codigo:'h-cruz15',    nombre:'H Cruz 15mm',                categoria:'herraje_otros',      detal:45000, mayorista:31500, costo:17500, orden:120},
+  {codigo:'h-cruzMini',  nombre:'H Cruz mini 11mm',           categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:14000, orden:130},
+  {codigo:'h-sb8',       nombre:'H San Benito 8mm',           categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:12600, orden:140},
+  {codigo:'h-clover',    nombre:'H Clover sol',               categoria:'herraje_otros',      detal:45000, mayorista:31500, costo:17500, orden:150},
+  {codigo:'h-rosa',      nombre:'H Rosa de Guadalupe',        categoria:'herraje_otros',      detal:25000, mayorista:17500, costo:10500, orden:160},
+  {codigo:'h-sb10',      nombre:'H San Benito 10mm',          categoria:'herraje_otros',      detal:40000, mayorista:28000, costo:15400, orden:170},
+  {codigo:'h-sbAb',      nombre:'H San Benito abad',          categoria:'herraje_otros',      detal:30000, mayorista:21000, costo:11900, orden:180},
+  {codigo:'h-lovix',     nombre:'H Lovix',                    categoria:'herraje_otros',      detal:40000, mayorista:28000, costo:14000, orden:190},
+  {codigo:'h-infCirc',   nombre:'H Infinito circoniax',       categoria:'herraje_otros',      detal:55000, mayorista:38500, costo:35000, orden:200},
+  {codigo:'h-sbSizi',    nombre:'H San Benito americano',     categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:17500, orden:210},
+  {codigo:'h-cruzAzul',  nombre:'Dije Cruz 6 circoniax azul', categoria:'herraje_otros',      detal:55000, mayorista:38500, costo:24500, orden:220},
+  {codigo:'h-clover7',   nombre:'Dije Clover circonia 7mm',   categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:12600, orden:230},
+  {codigo:'h-virgen',    nombre:'Dije Virgen Guadalupe slim', categoria:'herraje_otros',      detal:35000, mayorista:24500, costo:12600, orden:240},
+  {codigo:'h-virgenSil', nombre:'H Virgen silueta',           categoria:'herraje_otros',      detal:50000, mayorista:35000, costo:27000, orden:250},
+  {codigo:'neopreno-qty',nombre:'Neopreno',                   categoria:'opcionales',         detal:400,   mayorista:400,   costo:200,   orden:260},
+  {codigo:'chaq8',       nombre:'Chaquira #8',                categoria:'opcionales',         detal:15,    mayorista:15,    costo:5,     orden:270},
+  {codigo:'chaq6',       nombre:'Chaquira #6',                categoria:'opcionales',         detal:30,    mayorista:30,    costo:13,    orden:280},
+  {codigo:'colRojo',     nombre:'Colmillo Rojo',              categoria:'opcionales',         detal:700,   mayorista:700,   costo:350,   orden:290},
+  {codigo:'colNegro',    nombre:'Colmillo Negro',             categoria:'opcionales',         detal:400,   mayorista:400,   costo:210,   orden:300}
+];
+
+// ══════════════════════════════════════
+// PRECIOS
 // ══════════════════════════════════════
 var P = {
   manoObra: { detal:18000, mayorista:12600, costo:8000 },
   factorWeb: 1.04,
-  // items[id] = { nombre, detal, mayorista, costo }
-  items: {
-    bd4:        { nombre:'Balín diamantado #4',  detal:5000,  mayorista:3500,  costo:2500 },
-    bl3:        { nombre:'Balín liso #3',        detal:3200,  mayorista:2240,  costo:1200 },
-    bl4:        { nombre:'Balín liso #4',        detal:4400,  mayorista:3080,  costo:1700 },
-    bl5:        { nombre:'Balín liso #5',        detal:7800,  mayorista:5460,  costo:3500 },
-    bx6:        { nombre:'Balín X #6',           detal:10000, mayorista:7000,  costo:4100 },
-    rondCrist:  { nombre:'Rondel cristal 3.4mm', detal:12000, mayorista:8400,  costo:4200 },
-    rond5Crist: { nombre:'Rondel cristal 5mm',   detal:13400, mayorista:9380,  costo:5833 },
-    rondNegro:  { nombre:'Rondel negro 3.4mm',   detal:12000, mayorista:8400,  costo:4200 },
-    rond5Negro: { nombre:'Rondel negro 5mm',     detal:13400, mayorista:9380,  costo:5833 },
-    rondVerde:  { nombre:'Rondel verde 3.4mm',   detal:12000, mayorista:8400,  costo:4200 },
-    rond5Verde: { nombre:'Rondel verde 5mm',     detal:13400, mayorista:9380,  costo:5833 },
-    'h-cruz15':   { nombre:'H Cruz 15mm',                 detal:45000, mayorista:31500, costo:17500 },
-    'h-cruzMini': { nombre:'H Cruz mini 11mm',            detal:35000, mayorista:24500, costo:14000 },
-    'h-sb8':      { nombre:'H San Benito 8mm',            detal:35000, mayorista:24500, costo:12600 },
-    'h-clover':   { nombre:'H Clover sol',                detal:45000, mayorista:31500, costo:17500 },
-    'h-rosa':     { nombre:'H Rosa de Guadalupe',         detal:25000, mayorista:17500, costo:10500 },
-    'h-sb10':     { nombre:'H San Benito 10mm',           detal:40000, mayorista:28000, costo:15400 },
-    'h-sbAb':     { nombre:'H San Benito abad',           detal:30000, mayorista:21000, costo:11900 },
-    'h-lovix':    { nombre:'H Lovix',                     detal:40000, mayorista:28000, costo:14000 },
-    'h-infCirc':  { nombre:'H Infinito circoniax',        detal:55000, mayorista:38500, costo:35000 },
-    'h-sbSizi':   { nombre:'H San Benito americano',      detal:35000, mayorista:24500, costo:17500 },
-    'h-cruzAzul': { nombre:'Dije Cruz 6 circoniax azul',  detal:55000, mayorista:38500, costo:24500 },
-    'h-clover7':  { nombre:'Dije Clover circonia 7mm',    detal:35000, mayorista:24500, costo:12600 },
-    'h-virgen':   { nombre:'Dije Virgen Guadalupe slim',  detal:35000, mayorista:24500, costo:12600 },
-    'h-virgenSil':{ nombre:'H Virgen silueta',            detal:50000, mayorista:35000, costo:27000 },
-    'neopreno-qty':{ nombre:'Neopreno',       detal:400, mayorista:400, costo:200 },
-    chaq8:        { nombre:'Chaquira #8',     detal:15,  mayorista:15,  costo:5   },
-    chaq6:        { nombre:'Chaquira #6',     detal:30,  mayorista:30,  costo:13  },
-    colRojo:      { nombre:'Colmillo Rojo',   detal:700, mayorista:700, costo:350 },
-    colNegro:     { nombre:'Colmillo Negro',  detal:400, mayorista:400, costo:210 }
-  }
+  items: {}
 };
 
 // ══════════════════════════════════════
@@ -608,30 +369,73 @@ var P = {
 var modo = 'detal';
 var historial = JSON.parse(localStorage.getItem('bocana_h') || '[]');
 var sheetsURL = localStorage.getItem('bocana_url') || '';
+var stMap = { 'custom-qty':'st-custom' };
 
-// Mapa field id → contenedor stepper id
-var stMap = {
-  'bd4':'st-bd4','bl3':'st-bl3','bl4':'st-bl4','bl5':'st-bl5','bx6':'st-bx6',
-  'neopreno-qty':'st-neo','chaq8':'st-chaq8','chaq6':'st-chaq6','colRojo':'st-colRojo','colNegro':'st-colNegro',
-  'rondCrist':'st-rondCrist','rond5Crist':'st-rond5Crist',
-  'rondNegro':'st-rondNegro','rond5Negro':'st-rond5Negro',
-  'rondVerde':'st-rondVerde','rond5Verde':'st-rond5Verde',
-  'h-cruz15':'st-h-cruz15','h-cruzMini':'st-h-cruzMini','h-sb8':'st-h-sb8','h-clover':'st-h-clover',
-  'h-rosa':'st-h-rosa','h-sb10':'st-h-sb10','h-sbAb':'st-h-sbAb','h-lovix':'st-h-lovix',
-  'h-infCirc':'st-h-infCirc','h-sbSizi':'st-h-sbSizi','h-cruzAzul':'st-h-cruzAzul',
-  'h-clover7':'st-h-clover7','h-virgen':'st-h-virgen','h-virgenSil':'st-h-virgenSil',
-  'custom-qty':'st-custom'
-};
+// ══════════════════════════════════════
+// RENDERIZAR ITEMS
+// ══════════════════════════════════════
+function buildItemsUI(rows) {
+  P.items = {};
+  stMap = { 'custom-qty':'st-custom' };
+
+  rows.forEach(function(r) {
+    P.items[r.codigo] = { nombre: r.nombre, detal: r.detal, mayorista: r.mayorista, costo: r.costo };
+    stMap[r.codigo] = 'st-' + r.codigo;
+  });
+
+  var cats = {}, catOrder = [];
+  rows.forEach(function(r) {
+    if (!cats[r.categoria]) { cats[r.categoria] = []; catOrder.push(r.categoria); }
+    cats[r.categoria].push(r);
+  });
+
+  var html = '';
+  catOrder.forEach(function(cat) {
+    var label = CATEGORY_LABELS[cat] || cat;
+    var list  = cats[cat];
+    html += '<div class="section-label">' + label + '</div><div class="card">';
+    list.forEach(function(item, idx) {
+      var last = idx === list.length - 1;
+      html += '<div class="balin-row"' + (last ? ' style="border:none;padding-bottom:0"' : '') + '>';
+      html += '<div class="balin-info"><div class="balin-name">' + item.nombre + '</div>';
+      html += '<div class="balin-price">$' + fmt(item.detal) + ' d · $' + fmt(item.mayorista) + ' m</div></div>';
+      html += '<div class="stepper" id="st-' + item.codigo + '">';
+      html += '<div class="s-btn minus" data-field="' + item.codigo + '" data-delta="-1">−</div>';
+      html += '<input class="s-val" type="number" id="' + item.codigo + '" value="0" min="0" inputmode="numeric" oninput="inp(\'' + item.codigo + '\')">';
+      html += '<div class="s-btn plus" data-field="' + item.codigo + '" data-delta="1">+</div>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('items-container').innerHTML = html;
+  calcular();
+}
 
 // ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
 window.onload = function() {
-  calcular();
   syncDot();
   document.getElementById('modal-settings').onpointerdown = function(e){
     if (e.target === this) closeSettings();
   };
+
+  fetch(SUPABASE_URL + '?activo=eq.true&order=orden.asc', {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(function(rows) {
+    buildItemsUI(rows.length ? rows : FALLBACK_ROWS);
+    if (!rows.length) toast('Items locales (tabla vacía)', 'info');
+  })
+  .catch(function() {
+    buildItemsUI(FALLBACK_ROWS);
+    toast('Sin conexión — precios locales', 'info');
+  });
 };
 
 // ══════════════════════════════════════
