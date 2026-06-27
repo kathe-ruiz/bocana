@@ -186,6 +186,9 @@
   .items-loading { text-align: center; padding: 48px 20px; color: var(--ink-muted); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; }
   @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
   .items-loading span { display: inline-block; animation: pulse 1.4s ease-in-out infinite; }
+
+  .sub-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-muted); padding: 14px 0 10px; border-top: 1px solid var(--border); margin-top: 2px; }
+  .sub-label:first-child { border-top: none; padding-top: 0; }
 </style>
 </head>
 <body>
@@ -312,21 +315,21 @@
 var SUPABASE_URL = 'https://oubasfjxgpgqwtgihqzy.supabase.co/rest/v1/items_valorador';
 var SUPABASE_KEY = 'sb_publishable_Yq5ww0VtxlsK5dgbZDPPTg_JSTNSYYB';
 
-var CATEGORY_LABELS = {
-  balin_diamantado: 'Balín diamantado',
-  balin_liso:       'Balín liso',
-  balin_x:          'Balín X',
-  herraje_rondeles: 'Herraje — Rondeles',
-  herraje_otros:    'Herraje — Otros',
-  opcionales:       'Opcionales'
-};
+var CATEGORY_GROUPS = [
+  { label: 'Balín', cats: ['balin'], groupBySub: true,
+    subOrder:  ['diamantada','lisa','x'],
+    subLabels: { diamantada:'Diamantada', lisa:'Lisa', x:'X' } },
+  { label: 'Herraje — Rondeles', cats: ['herraje_rondeles'] },
+  { label: 'Herraje — Otros',    cats: ['herraje_otros'] },
+  { label: 'Opcionales',         cats: ['opcionales'] }
+];
 
 var FALLBACK_ROWS = [
-  {codigo:'bd4',         nombre:'Balín diamantado #4',        categoria:'balin_diamantado',  detal:5000,  mayorista:3500,  costo:2500,  orden:10},
-  {codigo:'bl3',         nombre:'Balín liso #3',              categoria:'balin_liso',         detal:3200,  mayorista:2240,  costo:1200,  orden:20},
-  {codigo:'bl4',         nombre:'Balín liso #4',              categoria:'balin_liso',         detal:4400,  mayorista:3080,  costo:1700,  orden:30},
-  {codigo:'bl5',         nombre:'Balín liso #5',              categoria:'balin_liso',         detal:7800,  mayorista:5460,  costo:3500,  orden:40},
-  {codigo:'bx6',         nombre:'Balín X #6',                 categoria:'balin_x',            detal:10000, mayorista:7000,  costo:4100,  orden:50},
+  {codigo:'bd4',         nombre:'Balín diamantado #4',        categoria:'balin', subcategoria:'diamantada', detal:5000,  mayorista:3500,  costo:2500,  orden:10},
+  {codigo:'bl3',         nombre:'Balín liso #3',              categoria:'balin', subcategoria:'lisa',       detal:3200,  mayorista:2240,  costo:1200,  orden:20},
+  {codigo:'bl4',         nombre:'Balín liso #4',              categoria:'balin', subcategoria:'lisa',       detal:4400,  mayorista:3080,  costo:1700,  orden:30},
+  {codigo:'bl5',         nombre:'Balín liso #5',              categoria:'balin', subcategoria:'lisa',       detal:7800,  mayorista:5460,  costo:3500,  orden:40},
+  {codigo:'bx6',         nombre:'Balín X #6',                 categoria:'balin', subcategoria:'x',          detal:10000, mayorista:7000,  costo:4100,  orden:50},
   {codigo:'rondCrist',   nombre:'Rondel cristal 3.4mm',       categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:60},
   {codigo:'rond5Crist',  nombre:'Rondel cristal 5mm',         categoria:'herraje_rondeles',   detal:13400, mayorista:9380,  costo:5833,  orden:70},
   {codigo:'rondNegro',   nombre:'Rondel negro 3.4mm',         categoria:'herraje_rondeles',   detal:12000, mayorista:8400,  costo:4200,  orden:80},
@@ -374,38 +377,64 @@ var stMap = { 'custom-qty':'st-custom' };
 // ══════════════════════════════════════
 // RENDERIZAR ITEMS
 // ══════════════════════════════════════
+function renderRow(item, isLast) {
+  var html = '<div class="balin-row"' + (isLast ? ' style="border:none;padding-bottom:0"' : '') + '>';
+  html += '<div class="balin-info"><div class="balin-name">' + item.nombre + '</div>';
+  html += '<div class="balin-price">$' + fmt(item.detal) + ' d · $' + fmt(item.mayorista) + ' m</div></div>';
+  html += '<div class="stepper" id="st-' + item.codigo + '">';
+  html += '<div class="s-btn minus" data-field="' + item.codigo + '" data-delta="-1">−</div>';
+  html += '<input class="s-val" type="number" id="' + item.codigo + '" value="0" min="0" inputmode="numeric" oninput="inp(\'' + item.codigo + '\')">';
+  html += '<div class="s-btn plus" data-field="' + item.codigo + '" data-delta="1">+</div>';
+  html += '</div></div>';
+  return html;
+}
+
 function buildItemsUI(rows) {
   P.items = {};
   stMap = { 'custom-qty':'st-custom' };
 
+  var byCat = {};
   rows.forEach(function(r) {
     P.items[r.codigo] = { nombre: r.nombre, detal: r.detal, mayorista: r.mayorista, costo: r.costo };
     stMap[r.codigo] = 'st-' + r.codigo;
-  });
-
-  var cats = {}, catOrder = [];
-  rows.forEach(function(r) {
-    if (!cats[r.categoria]) { cats[r.categoria] = []; catOrder.push(r.categoria); }
-    cats[r.categoria].push(r);
+    if (!byCat[r.categoria]) byCat[r.categoria] = [];
+    byCat[r.categoria].push(r);
   });
 
   var html = '';
-  catOrder.forEach(function(cat) {
-    var label = CATEGORY_LABELS[cat] || cat;
-    var list  = cats[cat];
-    html += '<div class="section-label">' + label + '</div><div class="card">';
-    list.forEach(function(item, idx) {
-      var last = idx === list.length - 1;
-      html += '<div class="balin-row"' + (last ? ' style="border:none;padding-bottom:0"' : '') + '>';
-      html += '<div class="balin-info"><div class="balin-name">' + item.nombre + '</div>';
-      html += '<div class="balin-price">$' + fmt(item.detal) + ' d · $' + fmt(item.mayorista) + ' m</div></div>';
-      html += '<div class="stepper" id="st-' + item.codigo + '">';
-      html += '<div class="s-btn minus" data-field="' + item.codigo + '" data-delta="-1">−</div>';
-      html += '<input class="s-val" type="number" id="' + item.codigo + '" value="0" min="0" inputmode="numeric" oninput="inp(\'' + item.codigo + '\')">';
-      html += '<div class="s-btn plus" data-field="' + item.codigo + '" data-delta="1">+</div>';
-      html += '</div></div>';
-    });
-    html += '</div>';
+  CATEGORY_GROUPS.forEach(function(group) {
+    var activeCats = group.cats.filter(function(c) { return byCat[c] && byCat[c].length; });
+    if (!activeCats.length) return;
+
+    var allItems = [];
+    activeCats.forEach(function(cat) { allItems = allItems.concat(byCat[cat]); });
+
+    if (group.groupBySub) {
+      var bySub = {};
+      allItems.forEach(function(item) {
+        var s = item.subcategoria || '';
+        if (!bySub[s]) bySub[s] = [];
+        bySub[s].push(item);
+      });
+      group.subOrder.forEach(function(sub) {
+        var list = bySub[sub];
+        if (!list || !list.length) return;
+        html += '<div class="section-label">' + (group.subLabels[sub] || sub) + '</div><div class="card">';
+        list.forEach(function(item, idx) {
+          html += renderRow(item, idx === list.length - 1);
+        });
+        html += '</div>';
+      });
+    } else {
+      html += '<div class="section-label">' + group.label + '</div><div class="card">';
+      activeCats.forEach(function(cat) {
+        byCat[cat].forEach(function(item) {
+          var isLast = item === allItems[allItems.length - 1];
+          html += renderRow(item, isLast);
+        });
+      });
+      html += '</div>';
+    }
   });
 
   document.getElementById('items-container').innerHTML = html;
