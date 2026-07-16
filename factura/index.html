@@ -495,7 +495,7 @@ async function generateInvoice() {
     y += 8;
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
-    const garantiaNota = 'En caso de garantía, el cliente deberá cubrir por anticipado los costos de envío tanto de ida como de vuelta del producto. La garantía en oro laminado aplica únicamente por cambio de tono; no cubre golpes, hundimientos ni rayaduras en la pieza. No se realizan devoluciones de dinero; la garantía se hace efectiva únicamente mediante el reemplazo de la pieza. En caso de que la pieza no esté disponible en inventario, será sustituida por otra de igual o similar valor, previa concertación entre el vendedor y el cliente.';
+    const garantiaNota = 'En caso de garantía, el cliente deberá cubrir por anticipado los costos de envío tanto de ida como de vuelta del producto. La garantía en oro laminado aplica únicamente por cambio de tono; no cubre golpes, hundimientos ni rayaduras en la pieza. No se realizan devoluciones de dinero; la garantía se hace efectiva únicamente mediante el reemplazo de la pieza. En caso de que la pieza no esté disponible en inventario, será sustituida por otra de igual valor, previa concertación entre el vendedor y el cliente.';
     const garantiaLines = doc.splitTextToSize(garantiaNota, contentW);
     doc.text(garantiaLines, margin, y);
 
